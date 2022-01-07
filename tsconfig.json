@@ -3,6 +3,7 @@
     "target": "es2020",
     "module": "commonjs",
     "moduleResolution": "node",
+    "declaration": true,
     "strict": false,
     "noImplicitUseStrict": true,
     "outDir": "dist",
@@ -11,7 +12,8 @@
       "@/*": ["./lib/*"],
     },
     "plugins": [
-      { "transform": "typescript-transform-paths" }
+      { "transform": "typescript-transform-paths" },
+      { "transform": "typescript-transform-paths", "afterDeclarations": true }
     ]
   },
   "include": [
