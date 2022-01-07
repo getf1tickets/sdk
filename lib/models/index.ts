@@ -26,5 +26,4 @@ export const registerModels = async (fastify: FastifyInstance, sequelize: Sequel
 };
 
 export * from '@/models/user';
-export * from '@/models/oauth2';
 export default models;
