@@ -9,4 +9,4 @@ export default fp<FastifyCorsOptions>(async (fastify) => {
     preflight: true,
     credentials: false,
   });
-});
+}, { name: 'sdk-cors' });

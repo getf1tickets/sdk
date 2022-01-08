@@ -3,4 +3,4 @@ import helmet from 'fastify-helmet';
 
 export default fp(async (fastify) => {
   fastify.register(helmet);
-});
+}, { name: 'sdk-helmet' });

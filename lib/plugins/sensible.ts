@@ -5,4 +5,4 @@ export default fp<SensibleOptions>(async (fastify) => {
   fastify.register(sensible, {
     errorHandler: false,
   });
-});
+}, { name: 'sdk-sensible' });

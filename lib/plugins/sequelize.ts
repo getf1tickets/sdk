@@ -3,7 +3,7 @@ import { Sequelize, Options } from 'sequelize';
 import { registerModels } from '@/models';
 
 declare module 'fastify' {
-  interface FastifyInstance {
+  export interface FastifyInstance {
     sequelize: Sequelize
   }
 }
@@ -46,4 +46,4 @@ export default fp<SequelizePluginOptions>(async (fastify, opts) => {
   await registerModels(fastify, sequelize);
 
   fastify.log.info({ name: 'sequelize' }, 'Sequelize is ready!');
-});
+}, { name: 'sdk-sequelize' });
