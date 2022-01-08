@@ -5,6 +5,7 @@ import Models from '@/models';
 
 export * from '@/interfaces';
 export * from '@/models';
+export * from '@/utils';
 
 export const registerPlugins = async (fastify: FastifyInstance) => {
   fastify.register(autoLoad, {
