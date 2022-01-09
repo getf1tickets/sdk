@@ -2,12 +2,6 @@ import fp from 'fastify-plugin';
 import { Sequelize, Options } from 'sequelize';
 import { registerModels } from '@/models';
 
-declare module 'fastify' {
-  export interface FastifyInstance {
-    sequelize: Sequelize
-  }
-}
-
 export interface SequelizePluginOptions {
   instanceName?: string;
   url?: string;
