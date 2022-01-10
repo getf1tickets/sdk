@@ -3,6 +3,7 @@ import fp from 'fastify-plugin';
 import _ from 'lodash';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import to from 'await-to-js';
+import { AuthEntity } from '@/interfaces';
 
 export interface AuthenticationOptions {
   authenticationServer?: string;
@@ -54,7 +55,7 @@ export default fp<AuthenticationOptions>(async (fastify, opts) => {
       }
     }
 
-    request.user = response.data;
+    request.authEntity = response.data as AuthEntity;
   };
 
   fastify.decorate('authentication', {

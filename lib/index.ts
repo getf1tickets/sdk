@@ -4,15 +4,19 @@ import { FastifyInstance } from 'fastify';
 import { Sequelize } from 'sequelize';
 import Models, { User } from '@/models';
 import { Authentication } from '@/plugins/authentification';
+import { AuthEntity } from '@/interfaces';
+import { Middlewares } from '@/plugins/middlewares';
 
 declare module 'fastify' {
   interface FastifyInstance {
-    sequelize: Sequelize,
-    authentication: Authentication,
+    sequelize: Sequelize;
+    authentication: Authentication;
+    middlewares: Middlewares;
   }
 
   interface FastifyRequest {
-    user?: User,
+    user?: User;
+    authEntity?: AuthEntity;
   }
 }
 
