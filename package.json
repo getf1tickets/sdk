@@ -9,6 +9,9 @@
     "local:publish": "yalc publish --private"
   },
   "dependencies": {
+    "ajv": "^8.8.2",
+    "ajv-errors": "^3.0.0",
+    "ajv-formats": "^2.1.1",
     "await-to-js": "^3.0.0",
     "axios": "^0.24.0",
     "fastify": "^3.25.3",
