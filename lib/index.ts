@@ -2,10 +2,11 @@ import autoLoad from 'fastify-autoload';
 import path from 'path';
 import { FastifyInstance } from 'fastify';
 import { Sequelize } from 'sequelize';
-import Models, { User } from '@/models';
 import { Authentication } from '@/plugins/authentification';
 import { AuthEntity } from '@/interfaces';
 import { Middlewares } from '@/plugins/middlewares';
+import { User } from '@/models/user';
+import { Product } from './models/product';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -17,6 +18,7 @@ declare module 'fastify' {
   interface FastifyRequest {
     user?: User;
     authEntity?: AuthEntity;
+    product?: Product;
   }
 }
 
@@ -29,7 +31,3 @@ export const registerPlugins = async (fastify: FastifyInstance) => {
 export * from '@/interfaces';
 export * from '@/models';
 export * from '@/utils';
-
-export default {
-  Models,
-};

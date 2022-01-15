@@ -2,9 +2,11 @@ import { FastifyInstance } from 'fastify';
 import { Model, Sequelize } from 'sequelize';
 
 import { User } from '@/models/user';
+import Product from '@/models/product';
 
-export const models = {
+const models = {
   User,
+  ...Product,
 };
 
 export const registerExtraModels = async (
@@ -31,4 +33,4 @@ export const registerModels = async (
 ) => registerExtraModels(Object.keys(models).map((key) => models[key]), fastify, sequelize);
 
 export * from '@/models/user';
-export default models;
+export * from '@/models/product';
