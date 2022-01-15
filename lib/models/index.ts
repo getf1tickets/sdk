@@ -1,11 +1,11 @@
 import { FastifyInstance } from 'fastify';
 import { Model, Sequelize } from 'sequelize';
 
-import { User } from '@/models/user';
+import User from '@/models/user';
 import Product from '@/models/product';
 
 const models = {
-  User,
+  ...User,
   ...Product,
 };
 

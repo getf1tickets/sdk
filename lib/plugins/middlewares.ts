@@ -3,7 +3,7 @@ import fp from 'fastify-plugin';
 import _ from 'lodash';
 import to from 'await-to-js';
 import { validate as validateUuid } from 'uuid';
-import { User } from '@/models/user';
+import { User, UserAddress } from '@/models/user';
 import { Product, ProductImage, ProductTag } from '@/models/product';
 
 export interface Middlewares {
@@ -23,6 +23,7 @@ export interface UserMiddlewareOptions {
   useAuth?: boolean;
   paramKey?: string;
   decorateRequest?: boolean;
+  includeAddresses?: boolean;
 }
 
 export interface ProductMiddlewareOptions {
@@ -40,6 +41,7 @@ export default fp(async (fastify) => {
         useAuth: true,
         paramKey: 'id',
         decorateRequest: true,
+        includeAddresses: false,
       },
     );
 
@@ -73,6 +75,12 @@ export default fp(async (fastify) => {
           where: {
             id: requestedUserId !== '@me' ? requestedUserId : request.authEntity.id,
           },
+          include: [
+            (options.includeAddresses && {
+              model: UserAddress,
+              as: 'addresses',
+            }),
+          ].filter(Boolean),
         }));
 
         if (err) {
@@ -125,7 +133,7 @@ export default fp(async (fastify) => {
               model: ProductTag,
               as: 'tags',
             }),
-          ],
+          ].filter(Boolean),
         }));
 
         if (err) {

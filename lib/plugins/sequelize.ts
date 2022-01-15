@@ -38,6 +38,7 @@ export default fp<SequelizePluginOptions>(async (fastify, opts) => {
 
   fastify.log.debug({ name: 'sequelize' }, 'Registering Sequelize models');
   await registerModels(fastify, sequelize);
+  await sequelize.sync();
 
   fastify.log.info({ name: 'sequelize' }, 'Sequelize is ready!');
 }, { name: 'sdk-sequelize' });

@@ -1,7 +1,10 @@
 import {
-  DataTypes, Model, Optional, Sequelize,
+  Association,
+  DataTypes, HasManyCreateAssociationMixin, HasManyGetAssociationsMixin, Model, Optional, Sequelize,
 } from 'sequelize';
 import { UUID } from '@/interfaces';
+
+import UserAddress from '@/models/user/address';
 
 interface UserAttributes {
   id: UUID;
@@ -23,6 +26,17 @@ export class User extends Model<UserAttributes, UserCreationAttributes>
   declare readonly createdAt: Date;
 
   declare readonly updatedAt: Date;
+
+  // association attributes
+  declare readonly addresses?: UserAddress[];
+
+  declare getAddresses: HasManyGetAssociationsMixin<UserAddress>;
+
+  declare createAddress: HasManyCreateAssociationMixin<UserAddress>;
+
+  declare static associations: {
+    addresses: Association<User, UserAddress>;
+  };
 
   static fn(sequelize: Sequelize) {
     User.init(
@@ -52,4 +66,8 @@ export class User extends Model<UserAttributes, UserCreationAttributes>
   }
 }
 
-export default User;
+export * from '@/models/user/address';
+export default {
+  User,
+  UserAddress,
+};
