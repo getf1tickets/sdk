@@ -13,6 +13,7 @@ declare module 'fastify' {
     sequelize: Sequelize;
     authentication: Authentication;
     middlewares: Middlewares;
+    to500: <T>(promise: Promise<T>) => Promise<T>
   }
 
   interface FastifyRequest {

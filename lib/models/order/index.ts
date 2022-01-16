@@ -3,12 +3,15 @@ import {
   DataTypes,
   HasManyCreateAssociationMixin,
   HasManyGetAssociationsMixin,
+  HasOneCreateAssociationMixin,
+  HasOneGetAssociationMixin,
   Model, Optional, Sequelize,
 } from 'sequelize';
 import { UUID } from '@/interfaces/index';
 import { enumToArray } from '@/utils';
 import { User, UserAddress } from '@/models/user';
 import OrderProduct from '@/models/order/product';
+import { Payment } from '@/models/payment';
 
 export enum OrderStatus {
   CREATED = 'created',
@@ -55,8 +58,15 @@ export class Order extends Model<OrderAttributes, OrderCreationAttributes>
 
   declare createProduct: HasManyCreateAssociationMixin<OrderProduct>;
 
+  declare readonly payment?: Payment;
+
+  declare getPayment: HasOneGetAssociationMixin<Payment>;
+
+  declare createPayment: HasOneCreateAssociationMixin<Payment>;
+
   declare static associations: {
     products: Association<Order, OrderProduct>;
+    payment: Association<Order, Payment>;
   };
 
   static fn(sequelize: Sequelize) {
@@ -113,6 +123,17 @@ export class Order extends Model<OrderAttributes, OrderCreationAttributes>
     Order.belongsTo(UserAddress, {
       foreignKey: 'addressId',
       as: 'address',
+    });
+
+    Order.hasOne(Payment, {
+      sourceKey: 'id',
+      foreignKey: 'orderId',
+      as: 'payment',
+    });
+
+    Payment.belongsTo(Order, {
+      foreignKey: 'orderId',
+      as: 'order',
     });
   }
 }

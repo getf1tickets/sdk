@@ -4,11 +4,13 @@ import { Model, Sequelize } from 'sequelize';
 import User from '@/models/user';
 import Product from '@/models/product';
 import Order from '@/models/order';
+import Payment from '@/models/payment';
 
 const models = {
   ...User,
   ...Product,
   ...Order,
+  ...Payment,
 };
 
 export const registerExtraModels = async (
@@ -37,3 +39,4 @@ export const registerModels = async (
 export * from '@/models/user';
 export * from '@/models/product';
 export * from '@/models/order';
+export * from '@/models/payment';
