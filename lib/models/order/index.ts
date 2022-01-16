@@ -17,6 +17,7 @@ export enum OrderStatus {
   CREATED = 'created',
   WAITING_PAYMENT = 'waiting_payment',
   COMPLETED = 'completed',
+  CANCELLED = 'cancelled',
 }
 
 interface OrderAttributes {
