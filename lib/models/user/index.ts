@@ -3,6 +3,7 @@ import {
   DataTypes, HasManyCreateAssociationMixin, HasManyGetAssociationsMixin, Model, Optional, Sequelize,
 } from 'sequelize';
 import { UUID } from '@/interfaces';
+import { Order } from '@/models/order';
 
 import UserAddress from '@/models/user/address';
 
@@ -34,8 +35,15 @@ export class User extends Model<UserAttributes, UserCreationAttributes>
 
   declare createAddress: HasManyCreateAssociationMixin<UserAddress>;
 
+  declare readonly orders?: Order[];
+
+  declare getOrders: HasManyGetAssociationsMixin<Order>;
+
+  declare createOrder: HasManyCreateAssociationMixin<Order>;
+
   declare static associations: {
     addresses: Association<User, UserAddress>;
+    orders: Association<User, Order>;
   };
 
   static fn(sequelize: Sequelize) {

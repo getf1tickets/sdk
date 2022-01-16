@@ -6,13 +6,16 @@ import {
 } from 'sequelize';
 import { Product } from '@/models/product';
 import { Order } from '@/models/order';
+import { UUID } from '@/interfaces';
 
 interface OrderProductAttributes {
   id: number;
   quantity: number;
 }
 
-interface OrderProductCreationAttributes extends Optional<OrderProductAttributes, 'id'> {}
+interface OrderProductCreationAttributes extends Optional<OrderProductAttributes, 'id'> {
+  productId: UUID;
+}
 
 export class OrderProduct extends Model<OrderProductAttributes, OrderProductCreationAttributes>
   implements OrderProductAttributes {

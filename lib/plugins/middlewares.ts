@@ -24,6 +24,7 @@ export interface UserMiddlewareOptions {
   paramKey?: string;
   decorateRequest?: boolean;
   includeAddresses?: boolean;
+  useToken?: boolean;
 }
 
 export interface ProductMiddlewareOptions {
@@ -42,20 +43,27 @@ export default fp(async (fastify) => {
         paramKey: 'id',
         decorateRequest: true,
         includeAddresses: false,
+        useToken: false,
       },
     );
 
     return async (request: FastifyRequest) => {
-      if (!options.paramKey || !request.params[options.paramKey]) {
-        throw fastify.httpErrors.badRequest(`Missing parameter: ${options.paramKey} from query`);
-      }
+      let requestedUserId;
 
-      const requestedUserId = request.params[options.paramKey];
-
-      if (requestedUserId !== '@me') {
-        if (!validateUuid(requestedUserId)) {
-          throw fastify.httpErrors.badRequest(`Incorrect parameter: ${options.paramKey} from query`);
+      if (!options.useToken) {
+        if (!options.paramKey || !request.params[options.paramKey]) {
+          throw fastify.httpErrors.badRequest(`Missing parameter: ${options.paramKey} from query`);
         }
+
+        requestedUserId = request.params[options.paramKey];
+
+        if (requestedUserId !== '@me') {
+          if (!validateUuid(requestedUserId)) {
+            throw fastify.httpErrors.badRequest(`Incorrect parameter: ${options.paramKey} from query`);
+          }
+        }
+      } else {
+        requestedUserId = '@me';
       }
 
       if (options.useAuth) {

@@ -24,7 +24,9 @@ interface OrderAttributes {
   status: OrderStatus;
 }
 
-interface OrderCreationAttributes extends Optional<OrderAttributes, 'id' | 'discount'> {}
+interface OrderCreationAttributes extends Optional<OrderAttributes, 'id' | 'discount'> {
+  addressId: UUID;
+}
 
 export class Order extends Model<OrderAttributes, OrderCreationAttributes>
   implements OrderAttributes {
@@ -97,14 +99,18 @@ export class Order extends Model<OrderAttributes, OrderCreationAttributes>
   }
 
   static associate() {
-    Order.hasOne(User, {
+    User.hasMany(Order, {
       sourceKey: 'id',
+      foreignKey: 'userId',
+      as: 'orders',
+    });
+
+    Order.belongsTo(User, {
       foreignKey: 'userId',
       as: 'user',
     });
 
-    Order.hasOne(UserAddress, {
-      sourceKey: 'id',
+    Order.belongsTo(UserAddress, {
       foreignKey: 'addressId',
       as: 'address',
     });
