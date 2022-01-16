@@ -3,7 +3,6 @@ import {
   Model, Optional, Sequelize,
 } from 'sequelize';
 import { UUID } from '@/interfaces/index';
-import { Product } from '@/models/product';
 
 interface ProductTagAttributes {
   id: UUID;
@@ -48,14 +47,6 @@ export class ProductTag extends Model<ProductTagAttributes, ProductTagCreationAt
         paranoid: true,
       },
     );
-  }
-
-  static associate() {
-    Product.hasMany(ProductTag, {
-      sourceKey: 'id',
-      foreignKey: 'productId',
-      as: 'tags',
-    });
   }
 }
 

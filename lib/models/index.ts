@@ -3,10 +3,12 @@ import { Model, Sequelize } from 'sequelize';
 
 import User from '@/models/user';
 import Product from '@/models/product';
+import Order from '@/models/order';
 
 const models = {
   ...User,
   ...Product,
+  ...Order,
 };
 
 export const registerExtraModels = async (

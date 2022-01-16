@@ -86,12 +86,20 @@ export class Product extends Model<ProductAttributes, ProductCreationAttributes>
       },
     );
   }
+
+  static associate() {
+    Product.hasMany(ProductTag, {
+      sourceKey: 'id',
+      foreignKey: 'productId',
+      as: 'tags',
+    });
+  }
 }
 
 export * from '@/models/product/image';
 export * from '@/models/product/tag';
-export default [
+export default {
   Product,
   ProductImage,
   ProductTag,
-];
+};
