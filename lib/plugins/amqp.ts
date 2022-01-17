@@ -1,14 +1,7 @@
 import fp from 'fastify-plugin';
 import amqp from 'amqplib';
 import { v4 } from 'uuid';
-
-export interface AMQP {
-  channel: amqp.Channel;
-  publish: (destination: string, type: string, data?: object) => Promise<void>;
-  createQueue: (routingKey: string, handler: QueueHandler) => Promise<void>;
-}
-
-export type QueueHandler = (type: string, data: object) => Promise<any>;
+import { QueueHandler } from '@/interfaces';
 
 export default fp(async (fastify) => {
   const connect = await amqp.connect(process.env.CLOUDAMQP_URL);
@@ -18,7 +11,7 @@ export default fp(async (fastify) => {
   const computeRoutingHeader = (destination: string) => {
     const keys = ['f1tickets', ...destination.split('.')];
     const header = {};
-    header[`routing-level-${keys.length}`] = destination;
+    header[`routing-level-${keys.length}`] = `f1tickets.${destination}`;
     return header;
   };
 
@@ -42,6 +35,8 @@ export default fp(async (fastify) => {
     await channel.assertExchange(process.env.AMQP_EXCHANGE_NAME, 'headers');
 
     const routingHeader = computeRoutingHeader(destination);
+
+    console.log(routingHeader);
 
     channel.publish(
       process.env.AMQP_EXCHANGE_NAME,
@@ -87,7 +82,7 @@ export default fp(async (fastify) => {
       }
 
       try {
-        await handler(type, data);
+        await handler(fastify, type, data);
       } catch (err) {
         fastify.log.error(err);
         return nack();

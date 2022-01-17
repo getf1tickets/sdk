@@ -3,11 +3,10 @@ import path from 'path';
 import { FastifyInstance } from 'fastify';
 import { Sequelize } from 'sequelize';
 import { Authentication } from '@/plugins/authentification';
-import { AuthEntity } from '@/interfaces';
+import { AMQP, AuthEntity } from '@/interfaces';
 import { Middlewares } from '@/plugins/middlewares';
 import { User } from '@/models/user';
 import { Product } from '@/models/product';
-import { AMQP } from '@/plugins/amqp';
 
 declare module 'fastify' {
   interface FastifyInstance {
