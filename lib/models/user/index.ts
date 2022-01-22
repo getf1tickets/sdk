@@ -6,6 +6,7 @@ import { UUID } from '@/interfaces';
 import { Order } from '@/models/order';
 
 import UserAddress from '@/models/user/address';
+import UserInfo from '@/models/user/info';
 
 interface UserAttributes {
   id: UUID;
@@ -74,8 +75,10 @@ export class User extends Model<UserAttributes, UserCreationAttributes>
   }
 }
 
+export * from '@/models/user/info';
 export * from '@/models/user/address';
 export default {
   User,
   UserAddress,
+  UserInfo,
 };

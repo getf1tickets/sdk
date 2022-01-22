@@ -5,6 +5,7 @@ import to from 'await-to-js';
 import { validate as validateUuid } from 'uuid';
 import { User, UserAddress } from '@/models/user';
 import { Product, ProductImage, ProductTag } from '@/models/product';
+import { UserInfo } from '@/models/user/info';
 
 export interface Middlewares {
   useUser: (options?: UserMiddlewareOptions) => (
@@ -24,6 +25,7 @@ export interface UserMiddlewareOptions {
   paramKey?: string;
   decorateRequest?: boolean;
   includeAddresses?: boolean;
+  includeInfo?: boolean;
   useToken?: boolean;
 }
 
@@ -42,6 +44,7 @@ export default fp(async (fastify) => {
         useAuth: true,
         paramKey: 'id',
         decorateRequest: true,
+        includeInfo: true,
         includeAddresses: false,
         useToken: false,
       },
@@ -87,6 +90,10 @@ export default fp(async (fastify) => {
             (options.includeAddresses && {
               model: UserAddress,
               as: 'addresses',
+            }),
+            (options.includeInfo && {
+              model: UserInfo,
+              as: 'info',
             }),
           ].filter(Boolean),
         }));
