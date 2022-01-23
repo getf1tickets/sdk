@@ -63,5 +63,5 @@
     "url": "https://github.com/buyerate/query-service/issues"
   },
   "homepage": "https://github.com/buyerate/query-service#readme",
-  "private": true
+  "private": false
 }
