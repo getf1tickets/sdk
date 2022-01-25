@@ -20,6 +20,11 @@ export default fp<SequelizePluginOptions>(async (fastify, opts) => {
         rejectUnauthorized: false,
       },
     },
+    pool: {
+      max: (process.env.NODE_ENV === 'production') ? 50 : 2,
+      min: (process.env.NODE_ENV === 'production') ? 20 : 2,
+      idle: 5000,
+    },
     ...opts.sequelizeOptions,
   };
 
