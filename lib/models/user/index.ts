@@ -12,9 +12,10 @@ interface UserAttributes {
   id: UUID;
   email: string;
   hashedPassword: string;
+  isAdmin: boolean;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'isAdmin'> {}
 
 // eslint-disable-next-line import/prefer-default-export
 export class User extends Model<UserAttributes, UserCreationAttributes>
@@ -24,6 +25,8 @@ export class User extends Model<UserAttributes, UserCreationAttributes>
   declare email: string;
 
   declare hashedPassword: string;
+
+  declare isAdmin: boolean;
 
   declare readonly createdAt: Date;
 
@@ -64,6 +67,11 @@ export class User extends Model<UserAttributes, UserCreationAttributes>
         hashedPassword: {
           type: DataTypes.TEXT,
           allowNull: true,
+        },
+        isAdmin: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
         },
       },
       {
