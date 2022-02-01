@@ -23,6 +23,7 @@ export interface Middlewares {
 export interface UserMiddlewareOptions {
   useAuth?: boolean;
   paramKey?: string;
+  shouldBeAdmin?: boolean;
   decorateRequest?: boolean;
   includeAddresses?: boolean;
   includeInfo?: boolean;
@@ -43,6 +44,7 @@ export default fp(async (fastify) => {
       {
         useAuth: true,
         paramKey: 'id',
+        shouldBeAdmin: false,
         decorateRequest: true,
         includeInfo: true,
         includeAddresses: false,
@@ -105,6 +107,10 @@ export default fp(async (fastify) => {
 
         if (!user) {
           throw fastify.httpErrors.internalServerError();
+        }
+
+        if (options.shouldBeAdmin && !user.isAdmin) {
+          throw fastify.httpErrors.unauthorized();
         }
 
         request.user = user;
