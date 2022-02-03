@@ -155,6 +155,9 @@ export default fp(async (fastify) => {
               as: 'tags',
             }),
           ].filter(Boolean),
+          order: [
+            [{ model: ProductImage, as: 'images' }, 'createdAt', 'asc'],
+          ],
         }));
 
         if (err) {
