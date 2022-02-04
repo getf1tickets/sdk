@@ -1,11 +1,15 @@
-import { FastifyRequest, FastifyReply, HookHandlerDoneFunction } from 'fastify';
+import to from 'await-to-js';
+import { FastifyReply, FastifyRequest, HookHandlerDoneFunction } from 'fastify';
 import fp from 'fastify-plugin';
 import _ from 'lodash';
-import to from 'await-to-js';
 import { validate as validateUuid } from 'uuid';
-import { User, UserAddress } from '@/models/user';
+import { Order } from '@/models/order';
+import { Payment } from '@/models/payment';
+import { PaymentMethod } from '@/models/payment/method';
 import { Product, ProductImage, ProductTag } from '@/models/product';
+import { User, UserAddress } from '@/models/user';
 import { UserInfo } from '@/models/user/info';
+import { OrderProduct } from '@/models/order/product';
 
 export interface Middlewares {
   useUser: (options?: UserMiddlewareOptions) => (
@@ -14,6 +18,11 @@ export interface Middlewares {
     done: HookHandlerDoneFunction,
   ) => Promise<void>,
   useProduct: (options?: ProductMiddlewareOptions) => (
+    request: FastifyRequest,
+    reply: FastifyReply,
+    done: HookHandlerDoneFunction,
+  ) => Promise<void>,
+  useOrder: (options?: OrderMiddlewareOptions) => (
     request: FastifyRequest,
     reply: FastifyReply,
     done: HookHandlerDoneFunction,
@@ -35,6 +44,12 @@ export interface ProductMiddlewareOptions {
   decorateRequest?: boolean;
   includeImages?: boolean;
   includeTags?: boolean;
+}
+
+export interface OrderMiddlewareOptions {
+  paramKey?: string;
+  decorateRequest?: boolean;
+  shouldFromUser?: boolean;
 }
 
 export default fp(async (fastify) => {
@@ -118,6 +133,75 @@ export default fp(async (fastify) => {
     };
   };
 
+  const useOrder = (opts: OrderMiddlewareOptions = {}) => {
+    const options = _.defaults(
+      opts,
+      {
+        paramKey: 'id',
+        decorateRequest: true,
+        shouldFromUser: true,
+      },
+    );
+
+    return async (request: FastifyRequest) => {
+      if (!options.paramKey || !request.params[options.paramKey]) {
+        throw fastify.httpErrors.badRequest(`Missing parameter: ${options.paramKey} from query`);
+      }
+
+      const requestedOrderId = request.params[options.paramKey];
+
+      if (!validateUuid(requestedOrderId)) {
+        throw fastify.httpErrors.badRequest(`Incorrect parameter: ${options.paramKey} from query`);
+      }
+
+      const order = await fastify.to500(Order.findOne({
+        where: {
+          id: requestedOrderId,
+        },
+        include: [
+          {
+            model: OrderProduct,
+            as: 'products',
+            required: true,
+            include: [{
+              model: Product,
+              as: 'product',
+            }],
+          },
+          {
+            model: UserAddress,
+            as: 'address',
+            required: true,
+          },
+          {
+            model: Payment,
+            as: 'payment',
+            include: [{
+              model: PaymentMethod,
+              as: 'method',
+            }],
+          },
+          (options.shouldFromUser && {
+            model: User,
+            as: 'user',
+            required: true,
+            where: {
+              id: request.user?.id,
+            },
+          }),
+        ].filter(Boolean),
+      }));
+
+      if (!order) {
+        throw fastify.httpErrors.notFound('Incorrect order: not found');
+      }
+
+      if (options.decorateRequest) {
+        request.order = order;
+      }
+    };
+  };
+
   const useProduct = (opts: ProductMiddlewareOptions = {}) => {
     const options = _.defaults(
       opts,
@@ -177,5 +261,6 @@ export default fp(async (fastify) => {
   fastify.decorate('middlewares', {
     useUser,
     useProduct,
+    useOrder,
   });
 }, { name: 'sdk-middlewares' });

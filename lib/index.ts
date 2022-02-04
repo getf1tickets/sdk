@@ -7,6 +7,7 @@ import { AMQP, AuthEntity } from '@/interfaces';
 import { Middlewares } from '@/plugins/middlewares';
 import { User } from '@/models/user';
 import { Product } from '@/models/product';
+import { Order } from '@/models/order';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -21,6 +22,7 @@ declare module 'fastify' {
     user?: User;
     authEntity?: AuthEntity;
     product?: Product;
+    order?: Order;
   }
 }
 
